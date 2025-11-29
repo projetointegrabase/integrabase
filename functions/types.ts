@@ -9,13 +9,8 @@ export interface Env {
   NODE_ENV: string;
   VITE_APP_ID: string;
   VITE_APP_TITLE: string;
-  VITE_OAUTH_PORTAL_URL: string;
-  VITE_FRONTEND_FORGE_API_URL: string;
-  VITE_FRONTEND_FORGE_API_KEY: string;
-  OAUTH_SERVER_URL: string;
-  OWNER_OPEN_ID: string;
-  BUILT_IN_FORGE_API_URL: string;
-  BUILT_IN_FORGE_API_KEY: string;
+  OWNER_EMAIL: string;
+  VITE_GOOGLE_MAPS_API_KEY?: string;
 }
 
 export type EventContext<Env = any, P extends string = any, Data = any> = {

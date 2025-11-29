@@ -2,7 +2,6 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
-import { APP_SUBTITLE, APP_TITLE, getLoginUrl } from "@/const";
 import { useLocation } from "wouter";
 import { useEffect } from "react";
 
@@ -40,7 +39,7 @@ export default function Home() {
           </p>
 
           <Button
-            onClick={() => window.location.href = getLoginUrl()}
+            onClick={() => window.location.href = "#"}
             className="w-full"
             size="lg"
           >
