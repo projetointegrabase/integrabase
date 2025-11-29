@@ -10,6 +10,6 @@ database_id = "894a6bad-e96e-4c1e-9ab9-55a91f77bbd9"
 # Environment variables
 [vars]
 NODE_ENV = "production"
-VITE_APP_TITLE = "Sistema de Acompanhamento Psicossocial"
+VITE_APP_TITLE = "Sistema Integração Base&Profil"
 VITE_APP_ID = "integrabase-prod"
-OWNER_EMAIL = "admin@integrabase.com"
+OWNER_EMAIL = "admin@inter.com"
