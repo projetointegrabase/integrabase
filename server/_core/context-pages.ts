@@ -1,5 +1,5 @@
 import type { User } from "../../drizzle/schema";
-import jwt from "jsonwebtoken";
+import { verifyToken } from "./jwt";
 import { drizzle } from "drizzle-orm/d1";
 import type { Env } from "../../functions/types";
 
@@ -31,12 +31,12 @@ export async function createContext({
   if (token) {
     try {
       const jwtSecret = env.JWT_SECRET || "default-secret-change-me";
-      const decoded = jwt.verify(token, jwtSecret) as any;
+      const decoded = await verifyToken(token, jwtSecret);
       user = {
-        userId: decoded.userId,
-        email: decoded.email,
-        role: decoded.role,
-        sector: decoded.sector,
+        userId: decoded.userId as number,
+        email: decoded.email as string,
+        role: decoded.role as string,
+        sector: decoded.sector as string,
       };
     } catch (error) {
       // Token inválido ou expirado

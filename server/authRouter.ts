@@ -2,9 +2,9 @@ import { z } from "zod";
 import { router, publicProcedure, protectedProcedure } from "./_core/trpc";
 import { users } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import { TRPCError } from "@trpc/server";
+import { signToken, verifyToken } from "./_core/jwt";
+import { hashPassword, verifyPassword } from "./_core/crypto";
 
 export const authRouter = router({
   // Login
@@ -36,7 +36,7 @@ export const authRouter = router({
       }
       
       // Verificar senha
-      const isValid = await bcrypt.compare(password, user.passwordHash);
+      const isValid = await verifyPassword(password, user.passwordHash);
       
       if (!isValid) {
         throw new TRPCError({
@@ -46,10 +46,9 @@ export const authRouter = router({
       }
       
       // Gerar token JWT
-      const token = jwt.sign(
+      const token = await signToken(
         { userId: user.id, email: user.email, role: user.role, sector: user.sector },
-        JWT_SECRET,
-        { expiresIn: "7d" }
+        JWT_SECRET
       );
       
       // Atualizar lastSignedIn
@@ -158,7 +157,7 @@ export const authRouter = router({
       }
       
       // Hash da senha
-      const passwordHash = await bcrypt.hash(input.password, 10);
+      const passwordHash = await hashPassword(input.password);
       
       // Criar usuário
       const result = await ctx.db.insert(users).values({
@@ -225,7 +224,7 @@ export const authRouter = router({
         });
       }
       
-      const passwordHash = await bcrypt.hash(input.newPassword, 10);
+      const passwordHash = await hashPassword(input.newPassword);
       
       await ctx.db.update(users)
         .set({ passwordHash, updatedAt: new Date() })
