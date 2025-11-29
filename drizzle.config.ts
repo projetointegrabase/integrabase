@@ -2,11 +2,11 @@ import type { Config } from "drizzle-kit";
 
 export default {
   schema: "./drizzle/schema.ts",
-  out: "./drizzle",
-  driver: "d1",
+  out: "./drizzle/migrations",
   dialect: "sqlite",
+  driver: "d1-http",
   dbCredentials: {
     wranglerConfigPath: "./wrangler.toml",
-    dbName: "projeto-integracao-db",
+    databaseName: "projeto-integracao-db",
   },
 } satisfies Config;

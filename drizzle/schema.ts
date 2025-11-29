@@ -11,13 +11,17 @@ export const users = sqliteTable("users", {
    * Use this for relations between tables.
    */
   id: integer("id").primaryKey({ autoIncrement: true }),
-  /** Manus OAuth identifier (openId) returned from the OAuth callback. Unique per user. */
-  openId: text("openId", { length: 64 }).notNull().unique(),
-  name: text("name"),
-  email: text("email"),
-  loginMethod: text("loginMethod"),
+  /** Email do usuário - usado para login */
+  email: text("email").notNull().unique(),
+  /** Senha hash (bcrypt) */
+  passwordHash: text("passwordHash").notNull(),
+  /** Nome completo do usuário */
+  name: text("name").notNull(),
+  /** Role do usuário no sistema */
   role: text("role", { enum: ["admin", "psicologo", "pedagogo", "assistente_social", "nutricionista", "medico"] }).default("assistente_social").notNull(),
+  /** Setor ao qual o usuário pertence */
   sector: text("sector", { enum: ["admin", "psicologia", "pedagogia", "servico_social", "nutricao", "medicina"] }).default("servico_social").notNull(),
+  /** Se o usuário está ativo */
   isActive: integer("isActive", { mode: "boolean" }).default(true).notNull(),
   createdAt: integer("createdAt", { mode: "timestamp" }).$defaultFn(() => new Date()).notNull(),
   updatedAt: integer("updatedAt", { mode: "timestamp" }).$defaultFn(() => new Date()).notNull(),
