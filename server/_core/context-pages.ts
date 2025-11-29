@@ -1,12 +1,14 @@
 import type { User } from "../../drizzle/schema";
-import { sdk } from "./sdk";
-import type { Env } from "../../functions/_types";
+import jwt from "jsonwebtoken";
+import { drizzle } from "drizzle-orm/d1";
+import type { Env } from "../../functions/types";
 
 export type TrpcContextPages = {
   req: Request;
   resHeaders: Headers;
   env: Env;
-  user: User | null;
+  user: { userId: number; email: string; role: string; sector: string } | null;
+  db: ReturnType<typeof drizzle>;
 };
 
 export async function createContext({
@@ -18,14 +20,28 @@ export async function createContext({
   resHeaders: Headers;
   env: Env;
 }): Promise<TrpcContextPages> {
-  let user: User | null = null;
-
-  try {
-    // Adaptar SDK para usar env binding
-    user = await sdk.authenticateRequest(req, env);
-  } catch (error) {
-    // Authentication is optional for public procedures.
-    user = null;
+  const db = drizzle(env.DB);
+  
+  // Extrair token do header Authorization
+  const authHeader = req.headers.get("authorization");
+  const token = authHeader?.startsWith("Bearer ") ? authHeader.substring(7) : null;
+  
+  let user: { userId: number; email: string; role: string; sector: string } | null = null;
+  
+  if (token) {
+    try {
+      const jwtSecret = env.JWT_SECRET || "default-secret-change-me";
+      const decoded = jwt.verify(token, jwtSecret) as any;
+      user = {
+        userId: decoded.userId,
+        email: decoded.email,
+        role: decoded.role,
+        sector: decoded.sector,
+      };
+    } catch (error) {
+      // Token inválido ou expirado
+      user = null;
+    }
   }
 
   return {
@@ -33,5 +49,6 @@ export async function createContext({
     resHeaders,
     env,
     user,
+    db,
   };
 }
