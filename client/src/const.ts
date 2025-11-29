@@ -2,7 +2,7 @@ export { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 
 export const APP_TITLE = "Projeto Integração Base&Profi";
 export const APP_SUBTITLE = "Acompanhamento da Transição da Base para o Profissional";
-export const APP_LOGO = "/logo-internacional.svg";
+export const APP_LOGO = "/logo-internacional.png";
 
 /**
  * Cores do Internacional
