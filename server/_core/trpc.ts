@@ -2,8 +2,12 @@ import { NOT_ADMIN_ERR_MSG, UNAUTHED_ERR_MSG } from '@shared/const';
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import type { TrpcContext } from "./context";
+import type { TrpcContextPages } from "./context-pages";
 
-const t = initTRPC.context<TrpcContext>().create({
+// Union type que aceita ambos os contextos
+type AnyContext = TrpcContext | TrpcContextPages;
+
+const t = initTRPC.context<AnyContext>().create({
   transformer: superjson,
 });
 
