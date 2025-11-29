@@ -6,33 +6,30 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2, AlertCircle } from "lucide-react";
 import { APP_TITLE, APP_SUBTITLE } from "@/const";
-import { mockLogin, saveAuthToken } from "@/_core/auth-mock";
+import { trpc } from "@/lib/trpc";
 
 export default function Login() {
   const [, setLocation] = useLocation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+
+  const loginMutation = trpc.auth.login.useMutation({
+    onSuccess: (data) => {
+      // Salvar token no localStorage
+      localStorage.setItem("auth_token", data.token);
+      // Redirecionar para dashboard
+      setLocation("/dashboard");
+    },
+    onError: (error) => {
+      setError(error.message || "Erro ao fazer login");
+    },
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setIsLoading(true);
-
-    // Simular delay de rede
-    await new Promise(resolve => setTimeout(resolve, 500));
-
-    const user = mockLogin(email, password);
-    
-    if (user) {
-      saveAuthToken(user);
-      setLocation("/dashboard");
-    } else {
-      setError("Email ou senha incorretos");
-    }
-    
-    setIsLoading(false);
+    loginMutation.mutate({ email, password });
   };
 
   return (
@@ -78,7 +75,7 @@ export default function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              disabled={isLoading}
+              disabled={loginMutation.isPending}
               className="h-11"
             />
           </div>
@@ -92,7 +89,7 @@ export default function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              disabled={isLoading}
+              disabled={loginMutation.isPending}
               className="h-11"
             />
           </div>
@@ -107,9 +104,9 @@ export default function Login() {
           <Button
             type="submit"
             className="w-full h-12 bg-[#C8102E] hover:bg-[#A00D24] text-white font-medium text-base"
-            disabled={isLoading}
+            disabled={loginMutation.isPending}
           >
-            {isLoading ? (
+            {loginMutation.isPending ? (
               <>
                 <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                 Entrando...
