@@ -33,16 +33,16 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-2xl p-8 space-y-6">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+      <Card className="w-full max-w-2xl p-12 space-y-8 bg-white shadow-lg">
         {/* Logos no topo */}
-        <div className="flex items-center justify-center gap-8 mb-6">
+        <div className="flex items-center justify-center gap-8 mb-8">
           <img 
             src="/logo-internacional.png" 
             alt="Sport Club Internacional" 
             className="h-24 w-24 object-contain"
           />
-          <div className="h-20 w-px bg-border" />
+          <div className="h-20 w-px bg-gray-300" />
           <img 
             src="/logo-servico-social.png" 
             alt="Serviço Social - Base & Profissional" 
@@ -50,14 +50,24 @@ export default function Login() {
           />
         </div>
 
-        <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold text-primary">{APP_TITLE}</h1>
-          <p className="text-sm text-muted-foreground">{APP_SUBTITLE}</p>
+        {/* Título */}
+        <div className="text-center space-y-3">
+          <h1 className="text-2xl font-bold text-[#C8102E]">{APP_TITLE}</h1>
+          <p className="text-sm text-gray-600">{APP_SUBTITLE}</p>
         </div>
 
+        {/* Descrição */}
+        <div className="text-center">
+          <p className="text-sm text-gray-500 leading-relaxed">
+            Sistema de acompanhamento psicossocial para atletas<br />
+            em transição da base para o profissional
+          </p>
+        </div>
+
+        {/* Formulário de Login */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email" className="text-gray-700">Email</Label>
             <Input
               id="email"
               type="email"
@@ -66,11 +76,12 @@ export default function Login() {
               onChange={(e) => setEmail(e.target.value)}
               required
               disabled={loginMutation.isPending}
+              className="h-11"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password">Senha</Label>
+            <Label htmlFor="password" className="text-gray-700">Senha</Label>
             <Input
               id="password"
               type="password"
@@ -79,11 +90,12 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
               required
               disabled={loginMutation.isPending}
+              className="h-11"
             />
           </div>
 
           {error && (
-            <div className="flex items-center gap-2 text-sm text-destructive bg-destructive/10 p-3 rounded-md">
+            <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 p-3 rounded-md border border-red-200">
               <AlertCircle className="h-4 w-4" />
               <span>{error}</span>
             </div>
@@ -91,13 +103,12 @@ export default function Login() {
 
           <Button
             type="submit"
-            className="w-full"
-            size="lg"
+            className="w-full h-12 bg-[#C8102E] hover:bg-[#A00D24] text-white font-medium text-base"
             disabled={loginMutation.isPending}
           >
             {loginMutation.isPending ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                 Entrando...
               </>
             ) : (
@@ -106,13 +117,9 @@ export default function Login() {
           </Button>
         </form>
 
-        <div className="text-center text-xs text-muted-foreground space-y-1">
+        {/* Footer */}
+        <div className="text-center text-xs text-gray-400 pt-4">
           <p>Desenvolvido para o Sport Club Internacional</p>
-          <p className="text-[10px]">
-            Usuários padrão: admin@inter.com, servicosocial@inter.com, pedagogia@inter.com, psico@inter.com, nutri@inter.com
-            <br />
-            Senha padrão: Inter@2024
-          </p>
         </div>
       </Card>
     </div>
