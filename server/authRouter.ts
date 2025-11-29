@@ -6,8 +6,6 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { TRPCError } from "@trpc/server";
 
-const JWT_SECRET = process.env.JWT_SECRET || "default-secret-change-me";
-
 export const authRouter = router({
   // Login
   login: publicProcedure
@@ -16,10 +14,19 @@ export const authRouter = router({
       password: z.string().min(6),
     }))
     .mutation(async ({ input, ctx }) => {
+      if (!('db' in ctx) || !ctx.db) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Database not available",
+        });
+      }
+
       const { email, password } = input;
+      const JWT_SECRET = ('env' in ctx && ctx.env?.JWT_SECRET) || process.env.JWT_SECRET || "default-secret-change-me";
       
       // Buscar usuário
-      const user = await ctx.db.select().from(users).where(eq(users.email, email)).get();
+      const result = await ctx.db.select().from(users).where(eq(users.email, email)).limit(1);
+      const user = result[0];
       
       if (!user) {
         throw new TRPCError({
@@ -68,8 +75,16 @@ export const authRouter = router({
       if (!ctx.user) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
+
+      if (!('db' in ctx) || !ctx.db) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Database not available",
+        });
+      }
       
-      const user = await ctx.db.select().from(users).where(eq(users.id, ctx.user.userId)).get();
+      const result = await ctx.db.select().from(users).where(eq(users.id, ctx.user.userId)).limit(1);
+      const user = result[0];
       
       if (!user) {
         throw new TRPCError({ code: "NOT_FOUND" });
@@ -89,6 +104,13 @@ export const authRouter = router({
     .query(async ({ ctx }) => {
       if (ctx.user?.role !== "admin") {
         throw new TRPCError({ code: "FORBIDDEN" });
+      }
+
+      if (!('db' in ctx) || !ctx.db) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Database not available",
+        });
       }
       
       const allUsers = await ctx.db.select().from(users).all();
@@ -118,10 +140,17 @@ export const authRouter = router({
       if (ctx.user?.role !== "admin") {
         throw new TRPCError({ code: "FORBIDDEN" });
       }
+
+      if (!('db' in ctx) || !ctx.db) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Database not available",
+        });
+      }
       
       // Verificar se email já existe
-      const existing = await ctx.db.select().from(users).where(eq(users.email, input.email)).get();
-      if (existing) {
+      const existing = await ctx.db.select().from(users).where(eq(users.email, input.email)).limit(1);
+      if (existing.length > 0) {
         throw new TRPCError({
           code: "CONFLICT",
           message: "Email já cadastrado",
@@ -160,6 +189,13 @@ export const authRouter = router({
       if (ctx.user?.role !== "admin") {
         throw new TRPCError({ code: "FORBIDDEN" });
       }
+
+      if (!('db' in ctx) || !ctx.db) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Database not available",
+        });
+      }
       
       const { id, ...updates } = input;
       
@@ -181,6 +217,13 @@ export const authRouter = router({
       if (ctx.user?.role !== "admin" && ctx.user?.userId !== input.userId) {
         throw new TRPCError({ code: "FORBIDDEN" });
       }
+
+      if (!('db' in ctx) || !ctx.db) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Database not available",
+        });
+      }
       
       const passwordHash = await bcrypt.hash(input.newPassword, 10);
       
@@ -199,6 +242,13 @@ export const authRouter = router({
     .mutation(async ({ ctx, input }) => {
       if (ctx.user?.role !== "admin") {
         throw new TRPCError({ code: "FORBIDDEN" });
+      }
+
+      if (!('db' in ctx) || !ctx.db) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Database not available",
+        });
       }
       
       // Não permitir deletar a si mesmo
