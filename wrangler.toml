@@ -6,6 +6,7 @@ pages_build_output_dir = "dist/public"
 binding = "DB"
 database_name = "projeto-integracao-db"
 database_id = "894a6bad-e96e-4c1e-9ab9-55a91f77bbd9"
+migrations_dir = "drizzle/migrations"
 
 # Environment variables
 [vars]

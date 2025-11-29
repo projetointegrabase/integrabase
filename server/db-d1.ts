@@ -12,6 +12,11 @@ export function initDb(d1Database: D1Database) {
   return _db;
 }
 
+// Helper function for routers
+export function db(d1Database: D1Database) {
+  return drizzle(d1Database);
+}
+
 export async function getDb() {
   if (!_db) {
     throw new Error("[Database] D1 not initialized. Call initDb() first.");

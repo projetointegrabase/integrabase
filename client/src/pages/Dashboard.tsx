@@ -5,6 +5,7 @@ import { SECTORS, APP_TITLE } from "@/const";
 import { LogOut, User } from "lucide-react";
 import { useState } from "react";
 import { useLocation } from "wouter";
+import ServicoSocialForms from "@/components/forms/ServicoSocialForms";
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
@@ -83,51 +84,7 @@ export default function Dashboard() {
       {/* Conteúdo Principal */}
       <main className="container mx-auto px-4 py-8">
         {activeTab === "servico_social" && (
-          <div className="space-y-6">
-            <div>
-              <h2 className="text-2xl font-bold mb-2">Serviço Social</h2>
-              <p className="text-muted-foreground">
-                Acompanhamento psicossocial de atletas em transição
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Card className="p-6 space-y-4">
-                <div>
-                  <h3 className="text-lg font-semibold">
-                    Ficha de Acompanhamento Social
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    Avaliação completa da situação social, familiar e
-                    educacional do atleta
-                  </p>
-                </div>
-                <Button className="w-full">Novo Formulário</Button>
-              </Card>
-
-              <Card className="p-6 space-y-4">
-                <div>
-                  <h3 className="text-lg font-semibold">
-                    Formulário de Feedback Familiar
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    Percepção da família sobre a transição e bem-estar do
-                    atleta
-                  </p>
-                </div>
-                <Button className="w-full">Novo Formulário</Button>
-              </Card>
-            </div>
-
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-4">
-                Formulários Recentes
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                Nenhum formulário preenchido ainda.
-              </p>
-            </Card>
-          </div>
+          <ServicoSocialForms />
         )}
 
         {activeTab === "psicologia" && (
